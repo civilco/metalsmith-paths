@@ -114,4 +114,42 @@ describe('Metalsmith Paths', function () {
       done()
     })
   })
+
+  it('should omit file extensions', function (done) {
+    plugin.should.be.a.Function
+
+    var files = {
+      'index.html': {},
+      'directory/index.html': {},
+      'directory/file.html': {}
+    }
+
+    plugin({
+      directoryIndex: 'index.html',
+      omitExt: true
+    })(files, null, function () {
+      files['index.html'].should.have.property('path').and.be.an.Object
+      files['index.html'].path.should.have.property('base').and.equal('index.html')
+      files['index.html'].path.should.have.property('dir').and.equal('')
+      files['index.html'].path.should.have.property('ext').and.equal('.html')
+      files['index.html'].path.should.have.property('name').and.equal('index')
+      files['index.html'].path.should.have.property('href').and.equal('/')
+
+      files['directory/index.html'].should.have.property('path').and.be.an.Object
+      files['directory/index.html'].path.should.have.property('base').and.equal('index.html')
+      files['directory/index.html'].path.should.have.property('dir').and.equal('directory')
+      files['directory/index.html'].path.should.have.property('ext').and.equal('.html')
+      files['directory/index.html'].path.should.have.property('name').and.equal('index')
+      files['directory/index.html'].path.should.have.property('href').and.equal('/directory/')
+
+      files['directory/file.html'].should.have.property('path').and.be.an.Object
+      files['directory/file.html'].path.should.have.property('base').and.equal('file.html')
+      files['directory/file.html'].path.should.have.property('dir').and.equal('directory')
+      files['directory/file.html'].path.should.have.property('ext').and.equal('.html')
+      files['directory/file.html'].path.should.have.property('name').and.equal('file')
+      files['directory/file.html'].path.should.have.property('href').and.equal('/directory/file')
+
+      done()
+    })
+  })
 })
